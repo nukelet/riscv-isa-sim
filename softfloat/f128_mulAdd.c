@@ -41,23 +41,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 float128_t f128_mulAdd( float128_t a, float128_t b, float128_t c )
 {
-    union ui128_f128 uA;
-    uint_fast64_t uiA64, uiA0;
-    union ui128_f128 uB;
-    uint_fast64_t uiB64, uiB0;
-    union ui128_f128 uC;
-    uint_fast64_t uiC64, uiC0;
+	float32_t *a32 = (float32_t*) &a;
+	float32_t *b32 = (float32_t*) &b;
+	float32_t *c32 = (float32_t*) &c;
 
-    uA.f = a;
-    uiA64 = uA.ui.v64;
-    uiA0  = uA.ui.v0;
-    uB.f = b;
-    uiB64 = uB.ui.v64;
-    uiB0  = uB.ui.v0;
-    uC.f = c;
-    uiC64 = uC.ui.v64;
-    uiC0  = uC.ui.v0;
-    return softfloat_mulAddF128( uiA64, uiA0, uiB64, uiB0, uiC64, uiC0, 0 );
+	float32_t result[4];
+	result[0] = f32_mulAdd(a32[0], b32[0], c32[0]);
+	result[1] = f32_mulAdd(a32[1], b32[1], c32[1]);
+	result[2] = f32_mulAdd(a32[2], b32[2], c32[2]);
+	result[3] = f32_mulAdd(a32[3], b32[3], c32[3]);
 
+	return *(float128_t*) result;
 }
 
+// float128_t f128_mulAdd( float128_t a, float128_t b, float128_t c )
+// {
+//     union ui128_f128 uA;
+//     uint_fast64_t uiA64, uiA0;
+//     union ui128_f128 uB;
+//     uint_fast64_t uiB64, uiB0;
+//     union ui128_f128 uC;
+//     uint_fast64_t uiC64, uiC0;
+//
+//     uA.f = a;
+//     uiA64 = uA.ui.v64;
+//     uiA0  = uA.ui.v0;
+//     uB.f = b;
+//     uiB64 = uB.ui.v64;
+//     uiB0  = uB.ui.v0;
+//     uC.f = c;
+//     uiC64 = uC.ui.v64;
+//     uiC0  = uC.ui.v0;
+//     return softfloat_mulAddF128( uiA64, uiA0, uiB64, uiB0, uiC64, uiC0, 0 );
+//
+// }
